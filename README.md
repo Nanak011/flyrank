@@ -24,3 +24,10 @@ In this stage I built a simple server to print a hello serve.
     Check the output for HTTP response code (response = 200 OK)
     ![alt text](uploads/image.png)
 
+4. Push to github
+    1. Create a new empty repository on github
+    2. In you local projects folder run `git init` to initialize git locally
+    3. Point remote git to the github repository `git remote add origin "your repository link"`
+    4. Run `git add .` to add all changes to git
+    5. Run `git commit -m "Your commit message"`
+    6. Run `git push origin main` to push your local git to github.
