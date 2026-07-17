@@ -22,4 +22,5 @@ In this stage I built a simple server to print a hello serve.
     `Remove-Item alias:curl`
     `curl -i http://localhost:3000`
     Check the output for HTTP response code (response = 200 OK)
-    
+    ![alt text](uploads/image.png)
+
