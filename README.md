@@ -95,3 +95,37 @@ Stage 2: Create tasks endpoint with in memory array as database
     2. Run `git commit -m "Your commit message"`
     3. Run `git push origin main` to push your local git to github.
 
+
+
+Stage 3: Create a new task
+
+
+1. Write the code
+    1. Add the express.json() middleware so that express can handle the payload inside POST requests.
+    2. Create a new varible nextTaskID with a value of 4
+    3. Create a new POST endpoinnt (/tasks) 
+        1. Validation: Check if the title is missing (!title), not a string (!==string), and empty (title.trim() == '') 
+        2. Handle error: create an if conditon where if the title doesnt fulfil the validation rules, a json response is sent with a message "Title is required and must be a non-empty string"
+        3. Create a newTask object that assigns a new id (nextTaskId), title, description, and a completion status of "false" by default
+        4. Add the new tasks to the tasks array with tasks.push(newTask)
+        5. Return the newly created task in JSON format with a 201 status code
+
+2. Test
+    1. Run `node index.js` on the terminal inside the project folder where the index.js file is
+    2. Check if "App is listening on port:3000" prints on the terminal
+
+    curl -i -X POST http://localhost:3000/tasks -H "Content-Type: application/json" -d "{\`"title\`":\`"Task4\`"}" 
+    Check the output for HTTP response code (response = 201 Created) and a message "{"id":4,"title":"Task4","description":"","completed":false}"
+
+    `curl -i http://localhost:3000/tasks/4`
+    Check the output for HTTP response code (response = 200 OK) and a message "{"id":4,"title":"Task4","description":"","completed":false}"  
+
+    curl -i -X POST http://localhost:3000/tasks -H "Content-Type: application/json" -d "{\`"title\`":\`"\`"}"   
+    Check the output for HTTP response code (response = 400 Bad Request) and a message "{"error":"Title is required and must be a non-empty string"}"
+
+    ![alt text](uploads/image4.png)
+
+3. Push to github
+    1. Run `git add .` to add all changes to git
+    2. Run `git commit -m "Your commit message"`
+    3. Run `git push origin main` to push your local git to github.
