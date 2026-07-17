@@ -1,5 +1,5 @@
 Stage 0: Hello server
-In this stage I built a simple server to print a hello serve.
+
  1. First setup the enviornment:
  Initialize node:
  `npm init`
@@ -58,3 +58,40 @@ Stage 1: Root and health endpoints
     1. Run `git add .` to add all changes to git
     2. Run `git commit -m "Your commit message"`
     3. Run `git push origin main` to push your local git to github.
+
+
+
+Stage 2: Create tasks endpoint with in memory array as database
+
+1. Write the code
+    1. Create an arrray (tasks) with three values each having an id, title, description, and completion status
+    2. Create a new endpoint (/tasks) that sends a json response of the (tasks) array
+    3. Create another endpoint (/tasks/:id) that sends a json response of the specific task id
+        1. Convert the URL string into a parameter using parseInt(req.params.id)
+        2. Handle error: create an if conditon where if the task id doesnt exist (!task), a json response is sent with a message "Task not found"
+        3. Send a json response with the task if the id exists
+
+2. Test
+    1. Run `node index.js` on the terminal inside the project folder where the index.js file is
+    2. Check if "App is listening on port:3000" prints on the terminal
+    3. Visit localhost:3000/tasks 
+    4. Visit localhost:3000/tasks/1
+    5. Visit localhost:3000/tasks/100
+
+    Test on terminal:
+
+    `curl -i http://localhost:3000/tasks`
+    Check the output for HTTP response code (response = 200 OK) and a message "[{"id":1,"title":"Task 1","description":"Create a hello world server","completed":true},{"id":2,"title":"Task 2","description":"Create root and health endpoints ","completed":true},{"id":3,"title":"Task 3","description":"Implement task CRUD operations","completed":false}]"
+
+    `curl -i http://localhost:3000/tasks/1`
+    Check the output for HTTP response code (response = 200 OK) and a message "{"id":1,"title":"Task 1","description":"Create a hello world server","completed":true}"  
+
+    `curl -i http://localhost:3000/tasks/100`
+    Check the output for HTTP response code (response = 404 Not Found) and a message "{"error":"Task not found"}"
+    ![alt text](uploads/image3.png)
+
+3. Push to github
+    1. Run `git add .` to add all changes to git
+    2. Run `git commit -m "Your commit message"`
+    3. Run `git push origin main` to push your local git to github.
+
