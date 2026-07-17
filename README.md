@@ -16,3 +16,10 @@ In this stage I built a simple server to print a hello serve.
     2. Check if "App is listening on port:3000" prints on the terminal
     3. Visit localhost:3000 
 
+    Test on terminal:
+    `curl -i http://localhost:3000`
+    use the following inn windows to use curl
+    `Remove-Item alias:curl`
+    `curl -i http://localhost:3000`
+    Check the output for HTTP response code (response = 200 OK)
+    
