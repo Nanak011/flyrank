@@ -5,12 +5,6 @@ const port = 3000;
 // Stage 3: Middleware to parse JSON request bodies
 app.use(express.json());
 
-//   Stage 0 print hello world
-// app.get('/', (req, res) => {
-//   res.send('Hello World!');
-// });
-
-
 // Stage 2: In memory array to store tasks acting as a temporary database
 let tasks = [
     {id: 1, title: "Task 1", description: "Create a hello world server", completed: true},
@@ -38,25 +32,22 @@ app.get('/health', (req, res) => {
     });
 });
 
-
 // Stage 2: GET /tasks endpoint returns the list of tasks in JSON format
 app.get('/tasks', (req, res) => {
     res.json(tasks);
 });
 
-
 // Stage 2: GET /tasks/:id endpoint returns a specific task by ID in JSON format
 app.get('/tasks/:id', (req, res) => {
     const taskId = parseInt(req.params.id);
     const task = tasks.find(t => t.id === taskId);
-    // Error handling: If the task is not found, return a 404 status code with an error message
+    
     if (!task) {
         return res.status(404).json({ 
             error: "Task not found" 
         });
     }
 
-    // If the task is found, return it in JSON format
     res.json(task);
 });
 
@@ -64,14 +55,12 @@ app.get('/tasks/:id', (req, res) => {
 app.post('/tasks', (req, res) => {
     const { title, description, completed } = req.body;
 
-    // Validate if title is missing, not a string, or an empty string
     if (!title || typeof title !== 'string' || title.trim() === '') {
         return res.status(400).json({  
             error: "Title is required and must be a non-empty string"
         });
     }
 
-    // Create a new task object with the next available ID
     const newTask = {
         id: nextTaskId++, 
         title,
@@ -79,13 +68,68 @@ app.post('/tasks', (req, res) => {
         completed: completed || false
     };
 
-    // Add the new task to the tasks array
     tasks.push(newTask);
-
-    // Return the newly created task in JSON format with a 201 status code
     res.status(201).json(newTask);
 });
 
+// Stage 4: PUT /tasks/:id endpoint updates an existing task
+app.put('/tasks/:id', (req, res) => {
+    const taskId = parseInt(req.params.id);
+    const taskIndex = tasks.findIndex(t => t.id === taskId);
+
+    // 404 handling if the task does not exist
+    if (taskIndex === -1) {
+        return res.status(404).json({ error: "Task not found" });
+    }
+
+    const { title, done, completed } = req.body;
+    
+    // Check if the body is empty or missing both updateable properties
+    const hasTitle = title !== undefined;
+    const hasDone = done !== undefined || completed !== undefined;
+    
+    if (!hasTitle && !hasDone) {
+        return res.status(400).json({ error: "Empty or invalid body" });
+    }
+
+    // Validate title if it was provided in the payload
+    if (hasTitle && (typeof title !== 'string' || title.trim() === '')) {
+        return res.status(400).json({ error: "Title must be a non-empty string" });
+    }
+
+    // Normalize incoming done status (accepts either 'done' or 'completed' based on stage docs)
+    const newDoneStatus = done !== undefined ? done : completed;
+
+    // Validate boolean status if it was provided
+    if (newDoneStatus !== undefined && typeof newDoneStatus !== 'boolean') {
+        return res.status(400).json({ error: "Completion status must be a boolean" });
+    }
+
+    // Apply updates directly to the record
+    if (hasTitle) tasks[taskIndex].title = title;
+    if (newDoneStatus !== undefined) {
+        tasks[taskIndex].completed = newDoneStatus; // Keeping database property consistent with your array
+    }
+
+    res.json(tasks[taskIndex]);
+});
+
+// Stage 4: DELETE /tasks/:id endpoint removes a task completely
+app.delete('/tasks/:id', (req, res) => {
+    const taskId = parseInt(req.params.id);
+    const taskIndex = tasks.findIndex(t => t.id === taskId);
+
+    // 404 handling if the task does not exist
+    if (taskIndex === -1) {
+        return res.status(404).json({ error: "Task not found" });
+    }
+
+    // Remove item from the local array
+    tasks.splice(taskIndex, 1);
+
+    // 204 No Content response carries an empty body
+    res.status(204).send();
+});
 
 app.listen(port, () => {
   console.log(`App listening on port ${port}`);

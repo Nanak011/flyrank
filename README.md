@@ -129,3 +129,49 @@ Stage 3: Create a new task
     1. Run `git add .` to add all changes to git
     2. Run `git commit -m "Your commit message"`
     3. Run `git push origin main` to push your local git to github.
+
+
+
+Stage 4: Update and delete tasks
+
+1. Write the code
+    1. Create a new PUT endpoint (/tasks/:id) to replace or modify an existing task's title and/or completion status
+        1. Convert the URL string into an integer parameter using parseInt(req.params.id)
+        2. Find the task index inside the array using tasks.findIndex()
+        3. Handle error: create an if condition where if the task index doesn't exist (==-1), a json response is sent with a 404 status code and a message "Task not found"
+        4. Validation: Check if the request body is empty or missing both updateable properties, and return a 400 status code with a message "Empty or invalid body"
+        5. Validation: If a title is provided, ensure it is a non-empty string, otherwise return a 400 status code with an error message
+        6. Validation: Normalize incoming done status (accepts either done or completed) and ensure it is a boolean, otherwise return a 400 status code with an error message
+        7. Apply the changes directly to the target item inside your array and return the updated task object with a 200 OK status code
+    2. Create a new DELETE endpoint (/tasks/:id) to remove a task completely from the array
+        1. Convert the URL string into an integer parameter using parseInt(req.params.id)
+        2. Find the task index inside the array using tasks.findIndex()
+        3. Handle error: create an if condition where if the task index doesn't exist (==-1), a json response is sent with a 404 status code and a message "Task not found"
+        4. Remove the task item from the array using the tasks.splice() method
+        5. Send back a 204 status code ("No Content") with a completely empty body using res.status(204).send()
+
+2. Test
+    1. Run `node index.js` on the terminal inside the project folder where the index.js file is
+    2. Check if "App is listening on port:3000" prints on the terminal
+
+    curl -i -X PUT http://localhost:3000/tasks/1 -H "Content-Type: application/json" -d "{\`"title\`":\`"UpdatedTask1\`",\`"done\`":false}"
+    Check the output for HTTP response code (response = 200 OK) and a message "{"id":1,"title":"UpdatedTask1","description":"Create a hello world server","completed":false}"
+
+    curl -i -X PUT http://localhost:3000/tasks/1 -H "Content-Type: application/json" -d "{}"
+    Check the output for HTTP response code (response = 400 Bad Request) and a message "{"error":"Empty or invalid body"}"
+
+    curl -i -X PUT http://localhost:3000/tasks/999 -H "Content-Type: application/json" -d "{\`"title\`":\`"Ghost\`",\`"done\`":true}"
+    Check the output for HTTP response code (response = 404 Not Found) and a message "{"error":"Task not found"}"
+
+    `curl -i -X DELETE http://localhost:3000/tasks/1`
+    Check the output for HTTP response code (response = 204 No Content) and confirm that the response payload body is completely empty
+
+    `curl -i http://localhost:3000/tasks`
+    Check the output for HTTP response code (response = 200 OK) and confirm that Task 1 has been completely removed from the printed list
+    ![alt text](uploads/image5.png)
+
+3. Push to github
+    1. Run `git add .` to add all changes to git
+    2. Run `git commit -m "Stage 4: full CRUD"`
+    3. Run `git push origin main` to push your local git to github.
+
