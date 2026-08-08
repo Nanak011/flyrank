@@ -294,3 +294,30 @@ Stage 1: Database read endpoints
     2. Run `git commit -m "Stage 1: database read endpoints"`
     3. Run `git push origin main` to push your local git to github.
    
+
+
+
+Stage 2: Insert into database
+
+1. Write the code
+    1. Update `POST /tasks` endpoint to insert a new row using `INSERT INTO tasks (title, done) VALUES (?, ?)`
+    2. Maintain validation checks: return 400 Bad Request if `title` is missing or empty
+    3. Retrieve the generated auto-increment ID using `result.lastInsertRowid` and return the newly created task with a 201 Created status code
+
+2. Test
+    1. Run `node index.js` on the terminal inside the project folder
+
+    Test on terminal:
+
+    `curl -i -X POST http://localhost:3000/tasks -H "Content-Type: application/json" -d "{\`"title\`":\`"Buy milk\`"}"`
+    Check the output for HTTP response code (response = 201 Created) and the newly created task with auto-generated database ID
+
+    Restart your server (`Ctrl + C` then `node index.js`) and run:
+    `curl -i http://localhost:3000/tasks`
+    Verify that "Buy milk" still exists in the database list after server restart
+
+3. Push to github
+    1. Run `git add .` to add all changes to git
+    2. Run `git commit -m "Stage 2: insert into database"`
+    3. Run `git push origin main` to push your local git to github.
+

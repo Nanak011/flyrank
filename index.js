@@ -42,7 +42,6 @@ app.get('/health', (req, res) => {
     });
 });
 
-// Stage 1: GET /tasks - Fetch all tasks from SQLite
 app.get('/tasks', (req, res) => {
     const rows = db.prepare('SELECT id, title, done FROM tasks').all();
     const formattedTasks = rows.map(task => ({
@@ -53,7 +52,6 @@ app.get('/tasks', (req, res) => {
     res.json(formattedTasks);
 });
 
-// Stage 1: GET /tasks/:id - Fetch single task by ID from SQLite
 app.get('/tasks/:id', (req, res) => {
     const taskId = parseInt(req.params.id);
     const task = db.prepare('SELECT id, title, done FROM tasks WHERE id = ?').get(taskId);
@@ -67,6 +65,29 @@ app.get('/tasks/:id', (req, res) => {
         title: task.title,
         completed: Boolean(task.done)
     });
+});
+
+// Stage 2: POST /tasks - Insert new task into SQLite
+app.post('/tasks', (req, res) => {
+    const { title, completed } = req.body;
+
+    if (!title || typeof title !== 'string' || title.trim() === '') {
+        return res.status(400).json({  
+            error: "Title is required and must be a non-empty string"
+        });
+    }
+
+    const isDone = completed ? 1 : 0;
+    const stmt = db.prepare('INSERT INTO tasks (title, done) VALUES (?, ?)');
+    const result = stmt.run(title.trim(), isDone);
+
+    const newTask = {
+        id: result.lastInsertRowid,
+        title: title.trim(),
+        completed: Boolean(isDone)
+    };
+
+    res.status(201).json(newTask);
 });
 
 app.listen(port, () => {
