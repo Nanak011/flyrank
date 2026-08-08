@@ -350,3 +350,27 @@ Stage 3: Update and delete with SQL
     2. Run `git commit -m "Stage 3: update and delete with SQL"`
     3. Run `git push origin main` to push your local git to github.
 
+
+
+
+Stage 4: Explored SQLite
+
+1. Write the code
+    1. Open `tasks.db` using DB Browser for SQLite (or VS Code SQLite extension)
+    2. Execute standard manual SQL queries directly against the database file:
+       - `SELECT * FROM tasks;`
+       - `SELECT * FROM tasks WHERE done = 1;`
+       - `SELECT COUNT(*) FROM tasks;`
+       - `UPDATE tasks SET done = 1;`
+       - `DELETE FROM tasks WHERE done = 1;`
+
+2. Test
+    1. Perform a manual update query in DB Browser for SQLite (e.g., `UPDATE tasks SET done = 1;`)
+    2. Run `curl -i http://localhost:3000/tasks` in your terminal
+    3. Verify that the API immediately reflects the direct database changes
+
+3. Push to github
+    1. Run `git add .` to add all changes to git
+    2. Run `git commit -m "Stage 4: explored SQLite"`
+    3. Run `git push origin main` to push your local git to github.
+
