@@ -9,10 +9,8 @@ const port = 3000;
 app.use(express.json());
 app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
-// Stage 0: Create and connect to SQLite database
 const db = new Database('tasks.db');
 
-// Create table if it doesn't exist
 db.exec(`
   CREATE TABLE IF NOT EXISTS tasks (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -21,7 +19,6 @@ db.exec(`
   )
 `);
 
-// Seed example tasks only if table is empty
 const countRow = db.prepare('SELECT COUNT(*) AS count FROM tasks').get();
 if (countRow.count === 0) {
   const insertTask = db.prepare('INSERT INTO tasks (title, done) VALUES (?, ?)');
@@ -42,6 +39,33 @@ app.get('/health', (req, res) => {
     res.json({
         status: "OK",
         timestamp: new Date().toISOString()
+    });
+});
+
+// Stage 1: GET /tasks - Fetch all tasks from SQLite
+app.get('/tasks', (req, res) => {
+    const rows = db.prepare('SELECT id, title, done FROM tasks').all();
+    const formattedTasks = rows.map(task => ({
+        id: task.id,
+        title: task.title,
+        completed: Boolean(task.done)
+    }));
+    res.json(formattedTasks);
+});
+
+// Stage 1: GET /tasks/:id - Fetch single task by ID from SQLite
+app.get('/tasks/:id', (req, res) => {
+    const taskId = parseInt(req.params.id);
+    const task = db.prepare('SELECT id, title, done FROM tasks WHERE id = ?').get(taskId);
+    
+    if (!task) {
+        return res.status(404).json({ error: "Task not found" });
+    }
+
+    res.json({
+        id: task.id,
+        title: task.title,
+        completed: Boolean(task.done)
     });
 });
 

@@ -266,4 +266,31 @@ Stage 0: Create SQLite database
 
 
 
-    
+
+Stage 1: Database read endpoints
+
+1. Write the code
+    1. Update `GET /tasks` endpoint to retrieve all records from SQLite using `SELECT id, title, done FROM tasks`
+    2. Update `GET /tasks/:id` endpoint to retrieve a single record using `SELECT id, title, done FROM tasks WHERE id = ?`
+    3. Handle error: Return a 404 status code with error JSON `{"error":"Task not found"}` if no row matches the given ID
+
+2. Test
+    1. Run `node index.js` on the terminal inside the project folder
+    2. Check if "App listening on port 3000" prints on the terminal
+
+    Test on terminal:
+
+    `curl -i http://localhost:3000/tasks`
+    Check the output for HTTP response code (response = 200 OK) and a message containing tasks from `tasks.db`
+
+    `curl -i http://localhost:3000/tasks/1`
+    Check the output for HTTP response code (response = 200 OK) and the single task object
+
+    `curl -i http://localhost:3000/tasks/999`
+    Check the output for HTTP response code (response = 404 Not Found) and message `{"error":"Task not found"}`
+
+3. Push to github
+    1. Run `git add .` to add all changes to git
+    2. Run `git commit -m "Stage 1: database read endpoints"`
+    3. Run `git push origin main` to push your local git to github.
+   
