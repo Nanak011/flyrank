@@ -175,3 +175,25 @@ Stage 4: Update and delete tasks
     2. Run `git commit -m "Stage 4: full CRUD"`
     3. Run `git push origin main` to push your local git to github.
 
+
+
+Stage 5: Swagger UI
+
+1. Write the code
+    1. Install swagger-ui-express by running `npm install swagger-ui-express` in your terminal
+    2. Create a new file named `openapi.json` in your root project folder to describe all CRUD endpoints
+    3. Update `index.js` to require `swagger-ui-express` and `openapi.json`
+    4. Mount the Swagger UI route at `/docs` using `app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument))`
+
+2. Test
+    1. Run `node index.js` on the terminal inside the project folder where the index.js file is
+    2. Check if "App listening on port 3000" and "Swagger UI documentation available at http://localhost:3000/docs" prints on the terminal
+    3. Visit `localhost:3000/docs` in your browser to view the interactive documentation
+    4. Test all CRUD endpoints using the "Try it out" button on the web page
+
+    ![alt text](uploads/image6.png)
+
+3. Push to github
+    1. Run `git add .` to add all changes to git
+    2. Run `git commit -m "Stage 5: Swagger UI"`
+    3. Run `git push origin main` to push your local git to github.

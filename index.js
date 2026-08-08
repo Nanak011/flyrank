@@ -1,9 +1,15 @@
 const express = require('express');
+const swaggerUi = require('swagger-ui-express');
+const swaggerDocument = require('./openapi.json');
+
 const app = express();
 const port = 3000;
 
 // Stage 3: Middleware to parse JSON request bodies
 app.use(express.json());
+
+// Stage 5: Server ineractive Swagger UI documentation at /docs
+app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 // Stage 2: In memory array to store tasks acting as a temporary database
 let tasks = [
@@ -133,4 +139,5 @@ app.delete('/tasks/:id', (req, res) => {
 
 app.listen(port, () => {
   console.log(`App listening on port ${port}`);
+  console.log(`Swagger UI documentation available at http://localhost:${port}/docs`);
 });

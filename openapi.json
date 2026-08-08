@@ -1,0 +1,105 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Task API",
+    "version": "1.0",
+    "description": "In-memory Task Management REST API"
+  },
+  "paths": {
+    "/": {
+      "get": {
+        "summary": "Root endpoint",
+        "responses": {
+          "200": { "description": "Returns API information and available endpoints" }
+        }
+      }
+    },
+    "/health": {
+      "get": {
+        "summary": "Health check endpoint",
+        "responses": {
+          "200": { "description": "Returns server status and timestamp" }
+        }
+      }
+    },
+    "/tasks": {
+      "get": {
+        "summary": "Get all tasks",
+        "responses": {
+          "200": { "description": "Returns the complete list of tasks" }
+        }
+      },
+      "post": {
+        "summary": "Create a new task",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "title": { "type": "string", "example": "Buy milk" },
+                  "description": { "type": "string", "example": "Get 2% milk" },
+                  "completed": { "type": "boolean", "example": false }
+                },
+                "required": ["title"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": { "description": "Task successfully created" },
+          "400": { "description": "Validation error for missing or invalid title" }
+        }
+      }
+    },
+    "/tasks/{id}": {
+      "get": {
+        "summary": "Get task by ID",
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "integer" } }
+        ],
+        "responses": {
+          "200": { "description": "Returns the requested task" },
+          "404": { "description": "Task not found" }
+        }
+      },
+      "put": {
+        "summary": "Update task by ID",
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "integer" } }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "title": { "type": "string", "example": "Updated Task Title" },
+                  "done": { "type": "boolean", "example": true },
+                  "completed": { "type": "boolean", "example": true }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Returns the updated task" },
+          "400": { "description": "Empty or invalid body" },
+          "404": { "description": "Task not found" }
+        }
+      },
+      "delete": {
+        "summary": "Delete task by ID",
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "integer" } }
+        ],
+        "responses": {
+          "204": { "description": "Task deleted successfully (No Content)" },
+          "404": { "description": "Task not found" }
+        }
+      }
+    }
+  }
+}
