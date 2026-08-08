@@ -321,3 +321,32 @@ Stage 2: Insert into database
     2. Run `git commit -m "Stage 2: insert into database"`
     3. Run `git push origin main` to push your local git to github.
 
+
+
+Stage 3: Update and delete with SQL
+
+1. Write the code
+    1. Update `PUT /tasks/:id` endpoint to modify existing task rows using `UPDATE tasks SET title = ?, done = ? WHERE id = ?`
+    2. Return 404 status code if the row ID does not exist, and 400 status code if input payload is empty or invalid
+    3. Update `DELETE /tasks/:id` endpoint to remove a task row using `DELETE FROM tasks WHERE id = ?`
+    4. Return 204 No Content with empty response body upon successful deletion
+
+2. Test
+    1. Run `node index.js` on the terminal inside the project folder
+
+    Test on terminal:
+
+    `curl -i -X PUT http://localhost:3000/tasks/1 -H "Content-Type: application/json" -d "{\`"title\`":\`"Updated Task 1\`",\`"completed\`":true}"`
+    Check for 200 OK status code and updated database values
+
+    `curl -i -X DELETE http://localhost:3000/tasks/1`
+    Check for 204 No Content status code and empty body
+
+    `curl -i http://localhost:3000/tasks/1`
+    Check for 404 Not Found status code confirming permanent deletion from SQLite database
+
+3. Push to github
+    1. Run `git add .` to add all changes to git
+    2. Run `git commit -m "Stage 3: update and delete with SQL"`
+    3. Run `git push origin main` to push your local git to github.
+

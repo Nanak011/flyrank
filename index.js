@@ -67,7 +67,6 @@ app.get('/tasks/:id', (req, res) => {
     });
 });
 
-// Stage 2: POST /tasks - Insert new task into SQLite
 app.post('/tasks', (req, res) => {
     const { title, completed } = req.body;
 
@@ -90,7 +89,62 @@ app.post('/tasks', (req, res) => {
     res.status(201).json(newTask);
 });
 
+// Stage 3: PUT /tasks/:id - Update existing task in SQLite
+app.put('/tasks/:id', (req, res) => {
+    const taskId = parseInt(req.params.id);
+    
+    const existingTask = db.prepare('SELECT * FROM tasks WHERE id = ?').get(taskId);
+    if (!existingTask) {
+        return res.status(404).json({ error: "Task not found" });
+    }
+
+    const { title, done, completed } = req.body;
+    
+    const hasTitle = title !== undefined;
+    const hasDone = done !== undefined || completed !== undefined;
+    
+    if (!hasTitle && !hasDone) {
+        return res.status(400).json({ error: "Empty or invalid body" });
+    }
+
+    if (hasTitle && (typeof title !== 'string' || title.trim() === '')) {
+        return res.status(400).json({ error: "Title must be a non-empty string" });
+    }
+
+    const newDoneStatus = done !== undefined ? done : completed;
+
+    if (newDoneStatus !== undefined && typeof newDoneStatus !== 'boolean') {
+        return res.status(400).json({ error: "Completion status must be a boolean" });
+    }
+
+    const updatedTitle = hasTitle ? title.trim() : existingTask.title;
+    const updatedDone = newDoneStatus !== undefined ? (newDoneStatus ? 1 : 0) : existingTask.done;
+
+    db.prepare('UPDATE tasks SET title = ?, done = ? WHERE id = ?').run(updatedTitle, updatedDone, taskId);
+
+    res.json({
+        id: taskId,
+        title: updatedTitle,
+        completed: Boolean(updatedDone)
+    });
+});
+
+// Stage 3: DELETE /tasks/:id - Remove task from SQLite
+app.delete('/tasks/:id', (req, res) => {
+    const taskId = parseInt(req.params.id);
+    
+    const existingTask = db.prepare('SELECT * FROM tasks WHERE id = ?').get(taskId);
+    if (!existingTask) {
+        return res.status(404).json({ error: "Task not found" });
+    }
+
+    db.prepare('DELETE FROM tasks WHERE id = ?').run(taskId);
+
+    res.status(204).send();
+});
+
 app.listen(port, () => {
     console.log(`App listening on port ${port}`);
     console.log(`SQLite database connected (tasks.db)`);
+    console.log(`Swagger UI documentation available at http://localhost:${port}/docs`);
 });
