@@ -234,3 +234,36 @@ Stage 6: Publish and docs
     1. Run `git add .` to add all final documentation changes to git
     2. Run `git commit -m "Stage 6: publish and docs"`
     3. Run `git push origin main` to push your final code to github.
+
+
+
+
+
+
+
+
+
+SQLite Database
+
+Stage 0: Create SQLite database
+
+1. Write the code
+    1. Install `better-sqlite3` by running `npm install better-sqlite3` in your terminal
+    2. Import `better-sqlite3` in `index.js` and connect to a local database file named `tasks.db`
+    3. Execute a SQL query `CREATE TABLE IF NOT EXISTS tasks` with columns `id` (INTEGER PRIMARY KEY AUTOINCREMENT), `title` (TEXT), and `done` (BOOLEAN)
+    4. Execute a SQL check `SELECT COUNT(*)` to ensure example tasks are inserted only if the database table is completely empty
+
+2. Test
+    1. Run `node index.js` on the terminal inside the project folder
+    2. Check if "SQLite database connected (tasks.db)" prints on the terminal
+    3. Verify that a file named `tasks.db` is automatically created in your root project folder
+    4. Restart your server multiple times using `node index.js` and confirm the seed tasks are not duplicated
+
+3. Push to github
+    1. Run `git add .` to add all changes to git
+    2. Run `git commit -m "Stage 0: create SQLite database"`
+    3. Run `git push origin main` to push your local git to github.
+
+
+
+    
