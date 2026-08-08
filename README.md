@@ -363,7 +363,7 @@ Stage 4: Explored SQLite
        - `SELECT COUNT(*) FROM tasks;`
        - `UPDATE tasks SET done = 1;`
        - `DELETE FROM tasks WHERE done = 1;`
-
+       
 2. Test
     1. Perform a manual update query in DB Browser for SQLite (e.g., `UPDATE tasks SET done = 1;`)
     2. Run `curl -i http://localhost:3000/tasks` in your terminal
@@ -374,3 +374,32 @@ Stage 4: Explored SQLite
     2. Run `git commit -m "Stage 4: explored SQLite"`
     3. Run `git push origin main` to push your local git to github.
 
+
+
+Stage 5: Database documentation
+
+1. Write the code
+    1. Update `.gitignore` file to ensure database binary logs and `node_modules/` are managed cleanly
+    2. Add detailed database selection reasoning, path information, and execution steps to `README.md`
+    3. Save a screenshot of the database viewer running queries on `tasks.db` into `uploads/db-browser-screenshot.png`
+
+    ![DB Browser Screenshot](uploads/db-browser-screenshot.png)
+
+2. Project Architecture & SQL Details
+    - **Why SQLite was chosen:** SQLite is zero-configuration, serverless, and stores all relational data inside a single lightweight file (`tasks.db`). This makes it ideal for embedded backend applications and persistent local development without running a separate database daemon.
+    - **Database file location:** Root directory `./tasks.db`
+    - **How to start the project:**
+      ```bash
+      npm install
+      node index.js
+      ```
+    - **Sample SQL Query Executed:**
+      ```sql
+      sqlite3 tasks.db
+      SELECT id, title, done FROM tasks WHERE done = 1;
+      ```
+
+3. Push to github
+    1. Run `git add .` to add all documentation changes to git
+    2. Run `git commit -m "Stage 5: database documentation"`
+    3. Run `git push origin main` to push your final code to github.
