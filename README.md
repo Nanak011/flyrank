@@ -197,3 +197,40 @@ Stage 5: Swagger UI
     1. Run `git add .` to add all changes to git
     2. Run `git commit -m "Stage 5: Swagger UI"`
     3. Run `git push origin main` to push your local git to github.
+
+
+
+
+Stage 6: Publish and docs
+
+1. Write the code
+    1. Create a `.gitignore` file in your root folder and add `node_modules/` so unnecessary files are ignored by git
+    2. Review and format your complete `README.md` file to ensure all setup instructions, endpoint details, and terminal checks from Stage 0 to Stage 6 are cleanly documented
+
+2. Test
+    1. Run `git status` on the terminal inside the project folder to make sure your working directory is clean
+    2. Run `git log --oneline` on the terminal to verify all stage commits are present and ordered properly
+    3. Visit your repository page on GitHub in your browser to verify that all code, images, and README details are rendered correctly
+
+    Test on terminal:
+
+    `git status`
+    Check the output for a message "nothing to commit, working tree clean"
+
+    `git log --oneline`
+    Check the output to confirm you have at least 7 clean stage commits:
+    - Stage 6: publish and docs
+    - Stage 5: Swagger UI
+    - Stage 4: full CRUD
+    - Stage 3: create with validation
+    - Stage 2: read endpoints with 404
+    - Stage 1: root and health endpoints
+    - Stage 0: hello server
+
+    `git remote -v`
+    Check the output to verify your remote origin points to your public GitHub repository link
+
+3. Push to github
+    1. Run `git add .` to add all final documentation changes to git
+    2. Run `git commit -m "Stage 6: publish and docs"`
+    3. Run `git push origin main` to push your final code to github.
