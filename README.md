@@ -403,3 +403,81 @@ Stage 5: Database documentation
     1. Run `git add .` to add all documentation changes to git
     2. Run `git commit -m "Stage 5: database documentation"`
     3. Run `git push origin main` to push your final code to github.
+
+
+
+# Task API - Postgres + Docker (A3)
+
+This is a direct continuation of the Week 2 SQLite version (A2) - the storage engine changed from `better-sqlite3` to Postgres running in Docker. Everything else - routes, validation, response shapes (`completed` in JSON, mapped to a `done` column), error messages, Swagger docs - is unchanged.
+
+## What this is
+
+Same 5 CRUD endpoints, same seed data, same `/health` shape as the SQLite version. The only new file that talks to the database is `repository.js`. `index.js` calls its methods (`getAll`, `getById`, `create`, `update`, `remove`) exactly the way it previously called `db.prepare(...)` - proving the storage swap really did only touch one file.
+
+## How to run it
+
+```bash
+cp .env.example .env
+docker compose up
+```
+Run all other commands on another terminal. 
+
+API starts at `http://localhost:3000`. Swagger docs at `http://localhost:3000/docs`, same as before.
+
+## Endpoints
+
+| Method | Path        | Description                  | Success | Errors   |
+|--------|-------------|------------------------------|---------|----------|
+| GET    | /           | API info                     | 200     | -        |
+| GET    | /health     | Health check                 | 200     | -        |
+| GET    | /tasks      | List all tasks               | 200     | -        |
+| GET    | /tasks/:id  | Get a single task            | 200     | 404      |
+| POST   | /tasks      | Create a new task            | 201     | 400      |
+| PUT    | /tasks/:id  | Update a task's title/done   | 200     | 400, 404 |
+| DELETE | /tasks/:id  | Delete a task                | 204     | 404      |
+
+
+## Architecture note
+
+The SQLite version wrote raw `db.prepare(...)` calls directly inside each route handler. Moving to Postgres meant extracting that into `repository.js`, which exposes the same operations (`getAll`, `getById`, `create`, `update`, `remove`) but backed by `pg` and parameterized `$1`-style queries instead of `better-sqlite3`'s `?` placeholders. Every route handler in `index.js` calls the repository the same way regardless of what's behind it - the only route-level change was adding `async`/`await`, since Postgres queries are asynchronous and SQLite's were not.
+
+## Persistence - how it was checked
+
+Created a task, updated another's completion status, deleted a third - then restarted the Postgres server entirely (not just the app) and queried the database directly with `psql`, no app involved. All changes were intact. This is the volume (`taskdata` in `compose.yaml`) doing its job: Postgres's data files live outside the container, so removing/recreating the container doesn't erase them.
+
+## Database Screenshot
+Query run directly against the Postgres container:
+
+``` docker exec -it week2-db-1 psql -U postgres -d tasks -c "SELECT * FROM tasks;" ```
+
+![alt text](uploads/image7.png)
+
+
+Create a new task via the API
+``` Invoke-RestMethod -Uri http://localhost:3000/tasks -Method Post -ContentType "application/json" -Body (@{title="persistence test"} | ConvertTo-Json) ```
+
+![alt text](uploads/image8.png)
+
+Stop everything
+In your docker compose up terminal: Ctrl+C, then run: ``` docker compose down ```
+Start it back up
+``` docker compose up ``` again - wait for 'Postgres database connected'.
+
+![alt text](uploads/image9.png)
+
+Query again
+``` docker exec -it week2-db-1 psql -U postgres -d tasks -c "SELECT * FROM tasks;" ```
+
+The 'persistence test' row should still be there.
+
+![alt text](uploads/image10.png)
+
+
+
+
+
+
+
+
+
+

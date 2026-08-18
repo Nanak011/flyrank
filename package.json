@@ -1,5 +1,5 @@
 {
-  "name": "week2",
+  "name": "week2-postgres",
   "version": "1.0.0",
   "description": "",
   "license": "ISC",
@@ -10,8 +10,9 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
-    "better-sqlite3": "^13.0.3",
+    "dotenv": "^17.4.2",
     "express": "^5.2.1",
+    "pg": "^8.13.1",
     "swagger-ui-express": "^5.0.1"
   }
 }
